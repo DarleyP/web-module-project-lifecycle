@@ -55,6 +55,17 @@ export default class App extends React.Component {
     this.fetchAllTodos()
   }
 
+  toggleComplete = id => () => {
+    axios.patch(`${URL}/${id}`)
+      .then(res => {
+        this.setState({...this.state, todos: this.state.todos.map(todo => {
+          if (todo.id !== id) return todo
+          return res.data.data
+        })})
+      })
+      .catch(this.setAxiosResponseErr)
+  }
+
   render() {
     return (
       <div>
@@ -64,7 +75,7 @@ export default class App extends React.Component {
           {
             this.state.todos.map(todo => {
               return (
-                <div key={todo.id}>{todo.name}</div>
+                <div onClick={this.toggleComplete(todo.id)} key={todo.id}>{todo.name} {todo.completed ? ' ✔️' : ''}</div>
               )
             })
           }
