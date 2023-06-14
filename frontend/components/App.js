@@ -1,5 +1,7 @@
 import React from 'react'
 import axios from 'axios';
+import Form from './Form';
+import TodoList from './TodoList';
 
 const URL = 'http://localhost:9000/api/todos'
 
@@ -67,7 +69,7 @@ export default class App extends React.Component {
       .catch(this.setAxiosResponseErr)
   }
 
-  toggleDisplayComplete = (evt) => {
+  toggleDisplayComplete = () => {
     this.setState({...this.state, displayCompleted: !this.state.displayCompleted
     })
   }
@@ -76,27 +78,18 @@ export default class App extends React.Component {
     return (
       <div>
         <div id="error">Error {this.state.error}</div>
-        <div id="todos">
-          <h2>Todos</h2>
-          {
-            this.state.todos.reduce((acc,todo) => {
-              if(this.state.displayCompleted || !todo.completed) return acc.concat(
-              <div onClick={this.toggleComplete(todo.id)} key={todo.id}>{todo.name} {todo.completed ? ' ✔️' : ''}</div>
-              )
-              return acc
-            },[])
-            // this.state.todos.map(todo => {
-            //   return (
-            //     <div onClick={this.toggleComplete(todo.id)} key={todo.id}>{todo.name} {todo.completed ? ' ✔️' : ''}</div>
-            //   )
-            // })
-          }
-        </div>
-        <form id="todoForm" onSubmit={this.onTodoFormSubmit}>
-          <input value={this.state.tdNameInput} onChange={this.onTdNameInputChange} type="text" placeholder='Type todo'></input>
-          <input type='submit'></input>
-        </form>
-        <button onClick={this.toggleDisplayComplete}>{this.state.displayCompleted ? "Hide" : "Show"}Completed</button>
+       <TodoList
+        todos={this.state.todos}
+        displayCompleted={this.state.displayCompleted}
+        toggleComplete={this.toggleComplete}
+       />
+       <Form 
+       onTodoFormSubmit={this.onTodoFormSubmit}
+       tdNameInput={this.state.tdNameInput}
+       onTdNameInputChange={this.onTdNameInputChange}
+       toggleDisplayComplete={this.toggleDisplayComplete}
+       displayCompleted={this.state.displayCompleted}
+       />
       </div>
     )
   }
